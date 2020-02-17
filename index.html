@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Rate Format</title>
+</head>
+<script language="javascript">
+function BASE_RATE_DECIMAL_NEW() {
+    try {
+        var oldAmt; // Utility Auto Fix Comments
+        oldAmt = document.MAINFORM.CFNC_N_LIBOR_RT.value;
+
+        oldAmt = Math.round(oldAmt * Math.pow(10, 5)) / Math.pow(10, 5);
+		//Math.pow(10, 5) 表示10的5次方，100000
+		//Math.round是四舍五入到最新整数20.49=20，20.5=21。
+		//上面是先把字段值乘以100000(小数点向后移5位）,然后round下，再除以100000，把小数点各前移5位。
+        if (("" + oldAmt).indexOf(".") > -1) {//判断有没有小数位。没有就加.00000,如有在后最加5个00000，主要为22行用。
+            oldAmt = oldAmt + "00000";
+        } else {
+            oldAmt = oldAmt + ".00000";
+        }  
+        document.MAINFORM.CFNC_N_LIBOR_RT.value = oldAmt.substring(0, oldAmt.indexOf(".") + 6);//小数点算一位的，加5位小数，共6。
+
+
+        oldAmt = document.MAINFORM.CFNC_N_RT.value; // Utility Auto Fix Comments
+
+        oldAmt = Math.round(oldAmt * Math.pow(10, 5)) / Math.pow(10, 5);
+        if (("" + oldAmt).indexOf(".") > -1) {
+            oldAmt = oldAmt + "00000";
+        } else {
+            oldAmt = oldAmt + ".00000";
+        }
+        document.MAINFORM.CFNC_N_RT.value = oldAmt.substring(0, oldAmt.indexOf(".") + 6);//小数点算一位的，加5位小数，共6。
+    } catch (e) {
+        DisExcpt("SSSS_FincEstablishReg.js", e);
+    }
+}
+
+function BASE_RATE_DECIMAL_OLD() {
+    try {
+        var oldAmt; // Utility Auto Fix Comments
+        oldAmt = document.MAINFORM.CFNC_N_LIBOR_RT.value;
+
+        oldAmt = Math.round(oldAmt * Math.pow(10, 4)) / Math.pow(10, 4);
+        if (("" + oldAmt).indexOf(".") > -1) {
+            oldAmt = oldAmt + "0000";
+        } else {
+            oldAmt = oldAmt + ".0000";
+        }
+        document.MAINFORM.CFNC_N_LIBOR_RT.value = oldAmt.substring(0, oldAmt.indexOf(".") + 5);
+
+
+        oldAmt = document.MAINFORM.CFNC_N_RT.value; // Utility Auto Fix Comments
+
+        oldAmt = Math.round(oldAmt * Math.pow(10, 4)) / Math.pow(10, 4);
+        if (("" + oldAmt).indexOf(".") > -1) {
+            oldAmt = oldAmt + "0000";
+        } else {
+            oldAmt = oldAmt + ".0000";
+        }
+        document.MAINFORM.CFNC_N_RT.value = oldAmt.substring(0, oldAmt.indexOf(".") + 5);
+    } catch (e) {
+        DisExcpt("SSSS_FincEstablishReg.js", e);
+    }
+}
+function CalculateDiscountInterestAmount() {
+    try {
+        //for #75667
+        var oldAmt;
+        oldAmt = document.MAINFORM.CFNC_N_DISC_RT.value;
+        oldAmt = (1 - (Math.round(oldAmt * Math.pow(10, 5)) / Math.pow(10, 5)) / 100) * document.MAINFORM.CFNC_N_RT.value;
+        if ((oldAmt + '').indexOf(".") > -1) {
+            oldAmt = oldAmt + "00000";
+        } else {
+            oldAmt = oldAmt + ".00000";
+        }
+        document.MAINFORM.CFNC_N_RT_AFTER_DISC.value = oldAmt.substring(0, oldAmt.indexOf(".") + 6);
+    } catch (e) {
+        DisExcpt("SSSS_FinanceEstablishment.js", e);
+    }
+}
+
+</script>
+
+<body>
+<center >
+<form name="MAINFORM">
+CFNC_N_LIBOR_RT：<input name="CFNC_N_LIBOR_RT" type="text"/><BR/>
+CFNC_N_RT：<input name="CFNC_N_RT" type="text"/><BR/>
+CFNC_N_DISC_RT：<input name="CFNC_N_DISC_RT" type="text"/><BR/>
+CFNC_N_RT_AFTER_DISC：<input name="CFNC_N_RT_AFTER_DISC" type="text"/><BR/>
+<input type="button"  onclick="BASE_RATE_DECIMAL_NEW()" value="BASE_RATE_DECIMAL_NEW"/>
+<BR/>
+<!--<input type="button"  onclick="BASE_RATE_DECIMAL_OLD()" value="BASE_RATE_DECIMAL_OLD"/>-->
+<BR/>
+
+<input type="button"  onclick="CalculateDiscountInterestAmount()" value="CalculateDiscountInterestAmount" style="background:#099"/>
+<BR/>
+</form>
+</center>
+</body>
+</html>
